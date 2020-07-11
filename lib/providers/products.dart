@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import './product.dart';
 
 class Products with ChangeNotifier{    // A class that can be extended or mixed in that provides a change notification
 List<Product> _items=[
@@ -41,6 +41,9 @@ List<Product> get items{              //a copy of _items
   return [..._items];
 }
 
+Product findById(String id){
+  return _items.firstWhere((prod) => prod.id == id);
+}
 void addProduct(){
   notifyListeners();          // to make other widgets know about changes in value
 }
