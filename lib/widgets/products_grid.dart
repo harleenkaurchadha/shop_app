@@ -4,16 +4,19 @@ import 'package:provider/provider.dart';
 import '../providers/products.dart';
 
 class ProductsGrid extends StatelessWidget {
+    final bool showFavs;
+
+    ProductsGrid(this.showFavs);
 
    @override
   Widget build(BuildContext context) {    //productsData will give access to products object
     final productsData= Provider.of<Products>(context); // setting of listener of type Products i.e it should be same as instance of class we created in changeNotifierProvider
-    final products= productsData.items;
+    final products= showFavs ? productsData.favouriteItems : productsData.items;
     return GridView.builder(
       padding: const EdgeInsets.all(10),
       itemCount: products.length,
-      itemBuilder: (ctx, i) => ChangeNotifierProvider(
-        create: (c) => products[i],  //we don't need to build new object since we already have
+      itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+        value: products[i],  //we don't need to build new object since we already have
         child: ProductItem(
 //        products[i].id,
 //        products[i].title,

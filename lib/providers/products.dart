@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './product.dart';
 
 class Products with ChangeNotifier{    // A class that can be extended or mixed in that provides a change notification
-List<Product> _items=[
+List<Product> _items=[                 //this property should never be accessible from outside
   Product(
     id: 'p1',
     title: 'Red Shirt',
@@ -35,15 +35,34 @@ List<Product> _items=[
     imageUrl:
     'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
   ),
-];              //this property should never be accessible from outside
+];
+var _showFavouritesOnly = false;
 
 List<Product> get items{              //a copy of _items
+//  if(_showFavouritesOnly){
+//    return _items.where((prodItem) => prodItem.isFavourite).toList();
+//  }
   return [..._items];
+}
+
+List<Product> get favouriteItems {
+  return _items.where((prodItem) => prodItem.isFavourite).toList();
 }
 
 Product findById(String id){
   return _items.firstWhere((prod) => prod.id == id);
 }
+
+//void showFavouritesOnly(){
+//  _showFavouritesOnly = true;
+//  notifyListeners();
+//}
+
+//void showAll(){
+//  _showFavouritesOnly = false;
+//  notifyListeners();
+//}
+
 void addProduct(){
   notifyListeners();          // to make other widgets know about changes in value
 }

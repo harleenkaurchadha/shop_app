@@ -11,7 +11,7 @@ class ProductItem extends StatelessWidget{
 //  ProductItem(this.id,this.title,this.imageUrl);
   @override
   Widget build(BuildContext context) {
-    final product= Provider.of<Product>(context);
+    final product= Provider.of<Product>(context, listen: false,);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GestureDetector(
@@ -25,17 +25,19 @@ class ProductItem extends StatelessWidget{
           child: Image.network(product.imageUrl, fit: BoxFit.cover,),
           footer: GridTileBar(
             backgroundColor: Colors.black87,
-            leading: IconButton(
-              icon: Icon(
-                  product.isFavourite ?
-                  Icons.favorite :
-                  Icons.favorite_border,
-              ),
-              onPressed: (){
-                product.toggleFavouriteStatus();
-              },
-              color: Theme.of(context).accentColor,
-            ),
+            leading: Consumer<Product>(
+                builder: (ctx, Product, child) => IconButton(
+                icon: Icon(
+                    product.isFavourite ?
+                    Icons.favorite :
+                    Icons.favorite_border,
+                ),
+                color: Theme.of(context).accentColor,
+                onPressed: (){
+                  product.toggleFavouriteStatus();
+                },
+                ),
+               ),
             title: Text(
               product.title,
               textAlign: TextAlign.center,
