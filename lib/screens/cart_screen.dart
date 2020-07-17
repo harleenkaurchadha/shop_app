@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/cart.dart';
+import '../providers/cart.dart' show Cart;  //This won't import CartItem from cart.dart to avoid name confusion
+import '../widgets/cart_item.dart' ;
 
 class CartScreen extends StatelessWidget{
   static const routeName = '/cart';
@@ -35,11 +36,25 @@ class CartScreen extends StatelessWidget{
                   onPressed: (){},
                   textColor: Theme.of(context).primaryColor,
                 ),
-              ],
+                ],
             ),
           ),
-        )
-      ],),
+        ),
+                SizedBox(height: 10),
+                Expanded(
+                  child:
+                  ListView.builder(
+                      itemCount: cart.itemCount,
+                      itemBuilder: (ctx, i) => CartItem(
+                        cart.items.values.toList()[i].id,
+                        cart.items.values.toList()[i].price,
+                        cart.items.values.toList()[i].quantity,
+                        cart.items.values.toList()[i].title,
+                      ),
+                ),
+              ),
+      ],
+      ),
     );
  }
 }
