@@ -74,4 +74,13 @@ void addProduct(Product product){
   _items.add(newProduct);
   notifyListeners();          // to make other widgets know about changes in value
 }
+void updateProduct(String id, Product newProduct){
+final prodIndex = _items.indexWhere((prod) => prod.id == id);
+if(prodIndex >=0){
+  _items[prodIndex] = newProduct;
+  notifyListeners();
+} else {
+  print('...');
+}
+}
 }
