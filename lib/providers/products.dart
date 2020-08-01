@@ -83,4 +83,8 @@ if(prodIndex >=0){
   print('...');
 }
 }
+void deleteProduct(String id){
+  _items.removeWhere((prod) => prod.id == id);
+  notifyListeners();
+}
 }
