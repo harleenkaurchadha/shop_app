@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import './product.dart';
 
 class Products with ChangeNotifier{    // A class that can be extended or mixed in that provides a change notification
@@ -64,15 +66,26 @@ Product findById(String id){
 //}
 
 void addProduct(Product product){
-  final newProduct = Product(
-    title: product.title,
-    description: product.description,
-    price: product.price,
-    imageUrl: product.imageUrl,
-    id: DateTime.now().toString(),
-  );
-  _items.add(newProduct);
-  notifyListeners();          // to make other widgets know about changes in value
+  const url= 'https://flutter-update-59f18.firebaseio.com/products.json';    // /products represent folder or collection in database
+  http.post(url, body: json.encode({                      //We have to give body in json
+    'title': product.title,
+    'description': product.description,
+    'imageUrl': product.imageUrl,
+    'price': product.price,
+    'isFavourite': product.isFavourite,
+  }),).then((response) {              //inside functn should execute once our post is complete & we receive response of our post request
+     print(json.decode(response.body));
+    final newProduct = Product(
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      id: json.decode(response.body)['name'],
+    );
+    _items.add(newProduct);
+    notifyListeners();          // to make other widgets know about changes in value
+  });
+  
 }
 void updateProduct(String id, Product newProduct){
 final prodIndex = _items.indexWhere((prod) => prod.id == id);

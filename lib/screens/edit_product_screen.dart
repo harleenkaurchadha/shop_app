@@ -12,7 +12,7 @@ class EditProductScreen extends StatefulWidget{   // because until submission of
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
-  final _priceFocusNode = FocusNode();
+  final _priceFocusNode = FocusNode();              //use focus node to identify specific text fields in flutter focus tree
   final _descriptionFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _imageFocusNode = FocusNode();
