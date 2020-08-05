@@ -65,9 +65,9 @@ Product findById(String id){
 //  notifyListeners();
 //}
 
-void addProduct(Product product){
+Future<void> addProduct(Product product){
   const url= 'https://flutter-update-59f18.firebaseio.com/products.json';    // /products represent folder or collection in database
-  http.post(url, body: json.encode({                      //We have to give body in json
+  return http.post(url, body: json.encode({       //we have used return here since we r returning result of calling post & calling then(another future)
     'title': product.title,
     'description': product.description,
     'imageUrl': product.imageUrl,

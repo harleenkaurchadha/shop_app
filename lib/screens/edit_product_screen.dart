@@ -33,6 +33,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'imageUrl' : '',
   };
   var _isInit = true;
+  var _isLoading = false;
 
   @override
   void initState() {
@@ -87,14 +88,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return ;
     }
    _form.currentState.save();
+    setState(() {
+      _isLoading = true;
+     });
     if(_editedProduct.id!= null ){                                  //product already exist so edit in that
       Provider.of<Products>(context,listen: false).updateProduct(_editedProduct.id,_editedProduct);
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
     }
     else
       {
-        Provider.of<Products>(context,listen: false).addProduct(_editedProduct);
+        Provider.of<Products>(context,listen: false).addProduct(_editedProduct).then((_) {
+          setState(() {
+            _isLoading = false;
+          });
+          Navigator.of(context).pop();                      //only go to prev screen once we r done with adding product
+        });
      }
-   Navigator.of(context).pop();                                         //jump to prev page of products listing
   }
 
   @override
@@ -109,7 +121,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
          ),
        ],
      ),
-     body: Padding(
+     body: _isLoading ?
+        Center(
+          child: CircularProgressIndicator(),
+        )
+     : Padding(
        padding: EdgeInsets.all(16),
        child: Form(
          key: _form,                                          //now we can use form property to interact with state managed by Form widget
