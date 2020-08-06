@@ -66,7 +66,7 @@ Product findById(String id){
 //}
 
 Future<void> addProduct(Product product){
-  const url= 'https://flutter-update-59f18.firebaseio.com/products.json';    // /products represent folder or collection in database
+  const url= 'https://flutter-update-59f18.firebaseio.com/products';    // /products represent folder or collection in database
   return http.post(url, body: json.encode({       //we have used return here since we r returning result of calling post & calling then(another future)
     'title': product.title,
     'description': product.description,
@@ -74,7 +74,7 @@ Future<void> addProduct(Product product){
     'price': product.price,
     'isFavourite': product.isFavourite,
   }),).then((response) {              //inside functn should execute once our post is complete & we receive response of our post request
-     print(json.decode(response.body));
+ //    print(json.decode(response.body));
     final newProduct = Product(
       title: product.title,
       description: product.description,
@@ -84,8 +84,10 @@ Future<void> addProduct(Product product){
     );
     _items.add(newProduct);
     notifyListeners();          // to make other widgets know about changes in value
+  }).catchError((error){         //this catch error will execute after post req completion & then mthd so that it covers error of both
+     print(error);
+     throw error;
   });
-  
 }
 void updateProduct(String id, Product newProduct){
 final prodIndex = _items.indexWhere((prod) => prod.id == id);
