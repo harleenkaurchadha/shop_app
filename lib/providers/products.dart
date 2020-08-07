@@ -64,9 +64,31 @@ Product findById(String id){
 //  _showFavouritesOnly = false;
 //  notifyListeners();
 //}
+  Future<void> fetchAndSetProducts() async{
+    const url= 'https://flutter-update-59f18.firebaseio.com/products.json';
+    try {
+      final response = await http.get(url);
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;         //since map of maps
+      final List<Product> loadedProducts = [];
+      extractedData.forEach((prodId, prodData) {
+        loadedProducts.add(Product(
+          id: prodId,
+          title: prodData['title'],
+          description: prodData['description'],
+          price: prodData['price'],
+          isFavourite: prodData['isFavourite'],
+          imageUrl: prodData['imageUrl']
+        ));
+      });
+      _items = loadedProducts;
+      notifyListeners();
+     } catch(error) {
+      throw (error);
+    }
+  }
 
 Future<void> addProduct(Product product) async{
-  const url= 'https://flutter-update-59f18.firebaseio.com/products';    // /products represent folder or collection in database
+  const url= 'https://flutter-update-59f18.firebaseio.com/products.json';    // /products represent folder or collection in database
      try {                                                                //code we want to check for errors
        final response = await http.post(url, body: json.encode({
          //wait for this code to finish until we move on to next line of code
