@@ -82,7 +82,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         });
     }
   }
-  void _saveForm(){
+  Future<void> _saveForm() async{
     final isValid = _form.currentState.validate();
     if(!isValid){
       return ;
@@ -101,30 +101,31 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
     else
       {
-        Provider.of<Products>(context,listen: false)
-            .addProduct(_editedProduct)
-            .catchError((error){
-              return showDialog (
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text('An error occurred!'),
-                  content: Text('Something went wrong'),
-                  actions: <Widget>[
-                    FlatButton(child: Text('Okay'),
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                   ),
-                  ],
-                  ),
-              );
-            }).then((_) {
-             // print('you are in then');
-             setState(() {
+        try{
+          await Provider.of<Products>(context,listen: false)
+              .addProduct(_editedProduct);
+        }
+        catch(error){
+          await showDialog (
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text('An error occurred!'),
+              content: Text('Something get wrong'),
+              actions: <Widget>[
+                FlatButton(child: Text('Okay'),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } finally {                                                 //this code should run no matter if we succeeded or failed
+          setState(() {
             _isLoading = false;
           });
           Navigator.of(context).pop();                      //only go to prev screen once we r done with adding product
-        });
+        }
      }
   }
 

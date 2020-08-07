@@ -65,29 +65,32 @@ Product findById(String id){
 //  notifyListeners();
 //}
 
-Future<void> addProduct(Product product){
+Future<void> addProduct(Product product) async{
   const url= 'https://flutter-update-59f18.firebaseio.com/products';    // /products represent folder or collection in database
-  return http.post(url, body: json.encode({       //we have used return here since we r returning result of calling post & calling then(another future)
-    'title': product.title,
-    'description': product.description,
-    'imageUrl': product.imageUrl,
-    'price': product.price,
-    'isFavourite': product.isFavourite,
-  }),).then((response) {              //inside functn should execute once our post is complete & we receive response of our post request
- //    print(json.decode(response.body));
-    final newProduct = Product(
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      id: json.decode(response.body)['name'],
-    );
-    _items.add(newProduct);
-    notifyListeners();          // to make other widgets know about changes in value
-  }).catchError((error){         //this catch error will execute after post req completion & then mthd so that it covers error of both
-     print(error);
-     throw error;
-  });
+     try {                                                                //code we want to check for errors
+       final response = await http.post(url, body: json.encode({
+         //wait for this code to finish until we move on to next line of code
+         'title': product.title,
+         'description': product.description,
+         'imageUrl': product.imageUrl,
+         'price': product.price,
+         'isFavourite': product.isFavourite,
+       }),
+       );
+       final newProduct = Product(                                      //then code
+         title: product.title,
+         description: product.description,
+         price: product.price,
+         imageUrl: product.imageUrl,
+         id: json.decode(response.body)['name'],
+       );
+       _items.add(newProduct);
+       notifyListeners();          // to make other widgets know about changes in value
+     }
+      catch(error) {
+        print(error);
+        throw error;
+      }
 }
 void updateProduct(String id, Product newProduct){
 final prodIndex = _items.indexWhere((prod) => prod.id == id);
