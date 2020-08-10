@@ -92,13 +92,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = true;
      });
     if(_editedProduct.id!= null ){                                  //product already exist so edit in that
-      Provider.of<Products>(context,listen: false)
+      await Provider.of<Products>(context,listen: false)
           .updateProduct(_editedProduct.id,_editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
-    }
+      }
     else
       {
         try{
@@ -120,13 +116,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ],
             ),
           );
-        } finally {                                                 //this code should run no matter if we succeeded or failed
-          setState(() {
-            _isLoading = false;
-          });
-          Navigator.of(context).pop();                      //only go to prev screen once we r done with adding product
         }
+//        finally {                                                 //this code should run no matter if we succeeded or failed
+//          setState(() {
+//            _isLoading = false;
+//          });
+//          Navigator.of(context).pop();                      //only go to prev screen once we r done with adding product
+//        }
      }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
   }
 
   @override

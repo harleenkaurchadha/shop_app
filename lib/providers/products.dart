@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './product.dart';
+import '../models/http_exception.dart';
 
 class Products with ChangeNotifier{    // A class that can be extended or mixed in that provides a change notification
 List<Product> _items=[                 //this property should never be accessible from outside
@@ -114,17 +115,35 @@ Future<void> addProduct(Product product) async{
         throw error;
       }
 }
-void updateProduct(String id, Product newProduct){
+Future<void> updateProduct(String id, Product newProduct) async{
 final prodIndex = _items.indexWhere((prod) => prod.id == id);
 if(prodIndex >=0){
+  final url= 'https://flutter-update-59f18.firebaseio.com/products/$id.json';
+  await http.patch(url,body: json.encode({                                   //merge incoming data with existing data
+  'title': newProduct.title,
+  'description' : newProduct.description,
+  'imageUrl' : newProduct.imageUrl,
+  'price' : newProduct.price,
+  }));
   _items[prodIndex] = newProduct;
   notifyListeners();
 } else {
   print('...');
 }
 }
-void deleteProduct(String id){
-  _items.removeWhere((prod) => prod.id == id);
+Future<void> deleteProduct(String id) async{
+  final url = 'https://flutter-update-59f18.firebaseio.com/products/$id.json';
+  final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+  var existingProduct = _items[existingProductIndex];
+  _items.removeAt(existingProductIndex);
   notifyListeners();
-}
+  final response = await http.delete(url);
+  if(response.statusCode >=400){
+    _items.insert(existingProductIndex, existingProduct);         //if deletion at server fails insert element locally since element will be deleted from there
+    notifyListeners();
+    throw HttpException('Could not delete product');
+    }
+    print(response.statusCode);
+    existingProduct = null;                                 //delete its reference from memory
+ }
 }
