@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import '../providers/cart.dart';
+import 'package:http/http.dart' as http;
 
 class OrderItem{
   final String id;
@@ -20,12 +22,25 @@ class Orders with ChangeNotifier{
   List<OrderItem> get orders{
     return [..._orders];
   }
-  void addOrder(List<CartItem> cartProducts, double total)                      // to add all contents of cart into order
-  {
+  Future<void> addOrder(List<CartItem> cartProducts, double total)                      // to add all contents of cart into order
+  async{
+    const url = 'https://flutter-update-59f18.firebaseio.com/orders.json';
+    final timestamp = DateTime.now();
+   final response = await http.post(url, body: json.encode({
+      'amount' : total,
+      'dateTime' : timestamp.toIso8601String(),             //use timestamp to get same time otherwise time of post request also gets added
+      'products' : cartProducts.map((cp) => {              //converting to maps to use for json.encode
+           'id' : cp.id,
+           'title' : cp.title,
+           'quantity' : cp.quantity,
+            'price' : cp.price,
+      }).toList(),
+    }),
+    );
     _orders.insert(0, OrderItem(
-      id: DateTime.now().toString(),
+      id: json.decode(response.body)['name'],
       amount: total,
-      dateTime: DateTime.now(),
+      dateTime: timestamp,
       products: cartProducts,
     )
     );                                      //recent order will come at starting position
