@@ -14,16 +14,17 @@ class OrdersScreen extends StatefulWidget{
 class _OrdersScreenState extends State<OrdersScreen> {
   var _isLoading = false;
   @override
-  void initState(){
-    Future.delayed(Duration.zero).then((_) async{
+  void initState(){                               //fetch in initState is good since it runs only once
+//    Future.delayed(Duration.zero).then((_) async{
       setState(() {
         _isLoading = true;
       });
-     await Provider.of<Orders>(context,listen: false).fetchAndSetOrders();
-     setState(() {
-       _isLoading = false;
+     Provider.of<Orders>(context,listen: false).fetchAndSetOrders().then((_) { //no need for future delayed with listen set to false
+       setState(() {
+         _isLoading = false;
+       });
      });
-    });
+//    });
     super.initState();
   }
   @override
