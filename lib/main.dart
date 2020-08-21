@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/cart.dart';
-import 'package:shop_app/screens/orders_screen.dart';
+import './providers/auth.dart';
+import './providers/cart.dart';
+import './screens/orders_screen.dart';
 import './screens/cart_screen.dart';
 import './screens/product_detail_screen.dart';
 import './screens/products_overview_screen.dart';
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return MultiProvider (providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => Auth(),
+        ),
         ChangeNotifierProvider(        //provides instance of class to all child widgets which are interested & the widgets which
         create: (ctx)=> Products(),    //which are listening to changes in products class will be rebuild
         ),
