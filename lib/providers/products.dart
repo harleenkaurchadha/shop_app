@@ -41,6 +41,7 @@ List<Product> _items=[                 //this property should never be accessibl
 ];
 var _showFavouritesOnly = false;
 
+
 List<Product> get items{              //a copy of _items
 //  if(_showFavouritesOnly){
 //    return _items.where((prodItem) => prodItem.isFavourite).toList();
