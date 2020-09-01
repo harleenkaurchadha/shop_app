@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './providers/auth.dart';
-import './providers/cart.dart';
 import './screens/orders_screen.dart';
 import './screens/cart_screen.dart';
 import './screens/product_detail_screen.dart';
 import './screens/products_overview_screen.dart';
-import './screens/orders_screen.dart';
 import './screens/user_products_screen.dart';
 import './screens/edit_product_screen.dart';
 import './screens/auth_screen.dart';
@@ -25,14 +23,20 @@ class MyApp extends StatelessWidget{
         ChangeNotifierProvider(
           create: (ctx) => Auth(),
         ),
-        ChangeNotifierProvider(        //provides instance of class to all child widgets which are interested & the widgets which
-        create: (ctx)=> Products(),    //which are listening to changes in products class will be rebuild
+        ChangeNotifierProxyProvider<Auth, Products>(     //<> it contains type of data we depend on, type of data we will provide here
+        update: (ctx, auth, previousProducts) => Products(      //products provider rebuilds when Auth provider changes
+            auth.token,
+            previousProducts == null ? [] : previousProducts.items,
+        ),
         ),
         ChangeNotifierProvider(
         create: (ctx)=> Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => Orders(),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          update: (ctx, auth, previousOrders) => Orders(
+            auth.token,
+            previousOrders == null ? [] : previousOrders.orders,
+          ),
         ),
     ],
       child: Consumer<Auth>(builder: (ctx, auth, _) => MaterialApp(                 //whenever Auth changes materialApp is rebuild

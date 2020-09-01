@@ -19,11 +19,11 @@ class Product with ChangeNotifier{
     this.isFavourite = false,
   });
 
-  Future<void> toggleFavouriteStatus() async{
+  Future<void> toggleFavouriteStatus(String token) async{
     final oldValue = isFavourite;
     isFavourite=!isFavourite;
     notifyListeners();
-    final url = 'https://flutter-update-59f18.firebaseio.com/products/$id.json';
+    final url = 'https://flutter-update-59f18.firebaseio.com/products/$id.json?auth=$token';
     try{
       final response = await http.patch(url,body: json.encode({             //http dosen't throws an error for patch ,put &delete
       'isFavourite' : isFavourite,
