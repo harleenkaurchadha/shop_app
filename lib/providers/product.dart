@@ -19,15 +19,17 @@ class Product with ChangeNotifier{
     this.isFavourite = false,
   });
 
-  Future<void> toggleFavouriteStatus(String token) async{
+  Future<void> toggleFavouriteStatus(String token, String userId) async{
     final oldValue = isFavourite;
     isFavourite=!isFavourite;
     notifyListeners();
-    final url = 'https://flutter-update-59f18.firebaseio.com/products/$id.json?auth=$token';
+    final url = 'https://flutter-update-59f18.firebaseio.com/userFavourites/$userId/$id.json?auth=$token';
     try{
-      final response = await http.patch(url,body: json.encode({             //http dosen't throws an error for patch ,put &delete
-      'isFavourite' : isFavourite,
-      }),
+      final response = await http.put(                                //using put since we only want to send true or false as a value
+        url,
+        body: json.encode(
+        isFavourite,
+       ),
       );
       if(response.statusCode >=400){                                        //i.e there is an error of status codes
         isFavourite = oldValue;

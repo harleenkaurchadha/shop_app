@@ -41,8 +41,9 @@ List<Product> _items=[                 //this property should never be accessibl
 ];
 //var _showFavouritesOnly = false;
 final String authToken;
+final String userId;
 
-Products(this.authToken, this._items);
+Products(this.authToken, this.userId, this._items);
 
 List<Product> get items{              //a copy of _items
 //  if(_showFavouritesOnly){
@@ -69,21 +70,25 @@ Product findById(String id){
 //  notifyListeners();
 //}
   Future<void> fetchAndSetProducts() async{
-    final url= 'https://flutter-update-59f18.firebaseio.com/products.json?auth=$authToken';
+    var url= 'https://flutter-update-59f18.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;         //since map of maps
-      final List<Product> loadedProducts = [];
       if(extractedData == null){
         return ;
       }
+      url = 'https://flutter-update-59f18.firebaseio.com/userFavourites/$userId.json?auth=$authToken';
+      final favouriteResponse = await http.get(url);
+      final favouriteData = json.decode(favouriteResponse.body);
+      print(favouriteData);
+      final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
           id: prodId,
           title: prodData['title'],
           description: prodData['description'],
           price: prodData['price'],
-          isFavourite: prodData['isFavourite'],
+          isFavourite: favouriteData == null ? false : favouriteData[prodId] ?? false,  //?? for if we find no entry for prodId then false
           imageUrl: prodData['imageUrl']
         ));
       });
@@ -103,7 +108,6 @@ Future<void> addProduct(Product product) async{
          'description': product.description,
          'imageUrl': product.imageUrl,
          'price': product.price,
-         'isFavourite': product.isFavourite,
        }),
        );
        final newProduct = Product(                                      //then code

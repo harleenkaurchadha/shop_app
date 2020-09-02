@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget{
         ChangeNotifierProxyProvider<Auth, Products>(     //<> it contains type of data we depend on, type of data we will provide here
         update: (ctx, auth, previousProducts) => Products(      //products provider rebuilds when Auth provider changes
             auth.token,
+            auth.userId,
             previousProducts == null ? [] : previousProducts.items,
         ),
         ),
