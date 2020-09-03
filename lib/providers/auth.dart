@@ -3,6 +3,7 @@ import 'dart:async';                          // for setting a timer
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import '../models/http_exception.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   String _token;
@@ -51,6 +52,14 @@ class Auth with ChangeNotifier {
       );
       _autoLogout();                            //since this is the place from where user is officially logged in
       notifyListeners();
+      final prefs = await SharedPreferences.getInstance();          //storing access to shared preferences in prefs
+      final userData = json.encode(
+          {
+            'token': _token,
+            'userId': _userId,
+            'expiryDate': _expiryDate.toIso8601String(),
+          });
+      prefs.setString('userData', userData);          // write data to sharedPreferences device storage
     } catch (error) {
       throw error;
     }
@@ -65,7 +74,25 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, 'signInWithPassword');
   }
 
-  void logout(){
+  Future<void> tryAutoLogin() async{
+    final prefs = await SharedPreferences.getInstance();
+    if(!prefs.containsKey('userData')){
+      return false;
+    }
+    final extractedUserData = json.decode(prefs.getString('userData')) as Map<String, Object>;   // convert to map
+    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
+    if(expiryDate.isBefore(DateTime.now())){
+      return false;                                                  //token has expired
+    }
+    _token = extractedUserData['token'];
+    _userId = extractedUserData['userId'];
+    _expiryDate = expiryDate;
+    notifyListeners();
+    _autoLogout();
+    return true;
+  }
+
+  Future<void> logout() async{
     _token = null;
     _userId = null;
     _expiryDate = null;
@@ -74,6 +101,8 @@ class Auth with ChangeNotifier {
       _authTimer = null;
     }
     notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();                                            //to clear stored user data on logout so that we does not enter tryAutoLogin
   }
 
   void _autoLogout(){

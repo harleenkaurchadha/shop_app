@@ -44,6 +44,7 @@ class AppDrawer extends StatelessWidget{
             title: Text('Logout'),
             onTap: () {
               Navigator.of(context).pop();     //in case drawer is open,the hard reset of widgets can lead to error
+              Navigator.of(context).pushReplacementNamed('/');     //so that we always go to home route and auth.isAuth logic always run
               Provider.of<Auth>(context, listen: false).logout();
             },
           ),
