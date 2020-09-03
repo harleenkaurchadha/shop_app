@@ -69,8 +69,9 @@ Product findById(String id){
 //  _showFavouritesOnly = false;
 //  notifyListeners();
 //}
-  Future<void> fetchAndSetProducts() async{
-    var url= 'https://flutter-update-59f18.firebaseio.com/products.json?auth=$authToken';
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async{
+    final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+    var url= 'https://flutter-update-59f18.firebaseio.com/products.json?auth=$authToken&$filterString';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;         //since map of maps
@@ -80,7 +81,6 @@ Product findById(String id){
       url = 'https://flutter-update-59f18.firebaseio.com/userFavourites/$userId.json?auth=$authToken';
       final favouriteResponse = await http.get(url);
       final favouriteData = json.decode(favouriteResponse.body);
-      print(favouriteData);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -100,14 +100,15 @@ Product findById(String id){
   }
 
 Future<void> addProduct(Product product) async{
-  final url= 'https://flutter-update-59f18.firebaseio.com/products.json?auth=$authToken';    // /products represent folder or collection in database
-     try {                                                                //code we want to check for errors
+  final url= 'https://flutter-update-59f18.firebaseio.com/products.json?auth=$authToken'; // fetching products for logged in user
+  try {                                                                //code we want to check for errors
        final response = await http.post(url, body: json.encode({
          //wait for this code to finish until we move on to next line of code
          'title': product.title,
          'description': product.description,
          'imageUrl': product.imageUrl,
          'price': product.price,
+         'creatorId' : userId,                               //we need userId only at server not locally
        }),
        );
        final newProduct = Product(                                      //then code

@@ -10,12 +10,13 @@ class UserProductsScreen extends StatelessWidget{
   static const routeName = '/user-products';
 
   Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false,).fetchAndSetProducts();
+    await Provider.of<Products>(context, listen: false,).fetchAndSetProducts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsData= Provider.of<Products>(context);
+  //  final productsData= Provider.of<Products>(context);           //otherwise we will go into infinite loop
+    print('rebuilding');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Products'),
@@ -29,22 +30,30 @@ class UserProductsScreen extends StatelessWidget{
         ],
       ),
       drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshProducts(context),
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListView.builder(
-          itemCount: productsData.items.length,
-          itemBuilder: (_,i) => Column(
-              children : [
-                UserProductItem(
-              productsData.items[i].id,
-              productsData.items[i].title,
-              productsData.items[i].imageUrl,
-          ),
-          Divider(),
-          ],
-          ),
+      body: FutureBuilder(                              // we used it since we need to load only user specific products as soon as screen is presented
+        future: _refreshProducts(context),                     //future to which futureBuilder should wait
+        builder: (ctx, snapshot) => snapshot.connectionState == ConnectionState.waiting ? Center(
+          child: CircularProgressIndicator(),
+        )
+            :RefreshIndicator(
+          onRefresh: () => _refreshProducts(context),
+          child: Consumer<Products>(                              // we used it so that only this part rebuilds
+            builder: (ctx, productsData, _) => Padding(
+              padding: EdgeInsets.all(8),
+              child: ListView.builder(
+              itemCount: productsData.items.length,
+              itemBuilder: (_,i) => Column(
+                  children : [
+                    UserProductItem(
+                  productsData.items[i].id,
+                  productsData.items[i].title,
+                  productsData.items[i].imageUrl,
+              ),
+              Divider(),
+              ],
+              ),
+              ),
+            ),
           ),
         ),
       ),
