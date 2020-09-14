@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../screens/product_detail_screen.dart';
@@ -23,7 +24,11 @@ class ProductItem extends StatelessWidget{
           );
         },
         child: GridTile(
-          child: Image.network(product.imageUrl, fit: BoxFit.cover,),
+          child: FadeInImage(
+            placeholder: AssetImage('assets/images/product-placeholder.png'),         //image to display initially before loading
+            image: NetworkImage(product.imageUrl),                                    //actual image to be displayed
+            fit: BoxFit.cover,
+          ),
           footer: GridTileBar(
             backgroundColor: Colors.black87,
             leading: Consumer<Product>(
