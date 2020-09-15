@@ -24,10 +24,13 @@ class ProductItem extends StatelessWidget{
           );
         },
         child: GridTile(
-          child: FadeInImage(
-            placeholder: AssetImage('assets/images/product-placeholder.png'),         //image to display initially before loading
-            image: NetworkImage(product.imageUrl),                                    //actual image to be displayed
-            fit: BoxFit.cover,
+          child: Hero(                                          //to give animation effect between 2 different screens
+            tag: product.id,                                    // to be used on new page when loaded
+            child: FadeInImage(
+              placeholder: AssetImage('assets/images/product-placeholder.png'),         //image to display initially before loading
+              image: NetworkImage(product.imageUrl),                                    //actual image to be displayed
+              fit: BoxFit.cover,
+            ),
           ),
           footer: GridTileBar(
             backgroundColor: Colors.black87,
