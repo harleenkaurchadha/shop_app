@@ -12,6 +12,7 @@ import './screens/auth_screen.dart';
 import './providers/products.dart';
 import './providers/cart.dart';
 import './providers/orders.dart';
+import './helpers/custom_route.dart';
 
 void main()
 {
@@ -48,6 +49,10 @@ class MyApp extends StatelessWidget{
           primarySwatch: Colors.purple,
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
+          pageTransitionsTheme: PageTransitionsTheme(builders: {                  //to apply animation to all routes including name routes
+            TargetPlatform.android: CustomPageTransitionBuilder(),
+            TargetPlatform.iOS: CustomPageTransitionBuilder(),
+          }),
         ),
         home: auth.isAuth ? ProductsOverviewScreen() : FutureBuilder(
           future: auth.tryAutoLogin(),
