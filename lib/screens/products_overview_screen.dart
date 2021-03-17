@@ -18,8 +18,7 @@ class ProductsOverviewScreen extends StatefulWidget{
 }
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
-  @override
-   var _showOnlyFavourites = false;
+  var _showOnlyFavourites = false;
    var _isInit = true;
    var _isLoading = false;
 

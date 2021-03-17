@@ -23,7 +23,7 @@ class Product with ChangeNotifier{
     final oldValue = isFavourite;
     isFavourite=!isFavourite;
     notifyListeners();
-    final url = 'https://flutter-update-59f18.firebaseio.com/userFavourites/$userId/$id.json?auth=$token';
+    final url = 'https://shop-app-ad559-default-rtdb.firebaseio.com/userFavourites/$userId/$id.json?auth=$token';
     try{
       final response = await http.put(                                //using put since we only want to send true or false as a value
         url,

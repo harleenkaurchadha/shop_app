@@ -71,14 +71,14 @@ Product findById(String id){
 //}
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async{
     final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
-    var url= 'https://flutter-update-59f18.firebaseio.com/products.json?auth=$authToken&$filterString';
+    var url = 'https://shop-app-ad559-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;         //since map of maps
       if(extractedData == null){
         return ;
       }
-      url = 'https://flutter-update-59f18.firebaseio.com/userFavourites/$userId.json?auth=$authToken';
+      url = 'https://shop-app-ad559-default-rtdb.firebaseio.com/userFavourites/$userId.json?auth=$authToken';
       final favouriteResponse = await http.get(url);
       final favouriteData = json.decode(favouriteResponse.body);
       final List<Product> loadedProducts = [];
@@ -100,7 +100,7 @@ Product findById(String id){
   }
 
 Future<void> addProduct(Product product) async{
-  final url= 'https://flutter-update-59f18.firebaseio.com/products.json?auth=$authToken'; // fetching products for logged in user
+  final url = 'https://shop-app-ad559-default-rtdb.firebaseio.com/products.json?auth=$authToken';   // fetching products for logged in user
   try {                                                                //code we want to check for errors
        final response = await http.post(url, body: json.encode({
          //wait for this code to finish until we move on to next line of code
@@ -129,7 +129,7 @@ Future<void> addProduct(Product product) async{
 Future<void> updateProduct(String id, Product newProduct) async{
 final prodIndex = _items.indexWhere((prod) => prod.id == id);
 if(prodIndex >=0){
-  final url= 'https://flutter-update-59f18.firebaseio.com/products/$id.json?auth=$authToken';
+  final url = 'https://shop-app-ad559-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
   await http.patch(url,body: json.encode({                                   //merge incoming data with existing data
   'title': newProduct.title,
   'description' : newProduct.description,
@@ -143,7 +143,7 @@ if(prodIndex >=0){
 }
 }
 Future<void> deleteProduct(String id) async{
-  final url = 'https://flutter-update-59f18.firebaseio.com/products/$id.json?auth=$authToken';
+  final url = 'https://shop-app-ad559-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
   final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
   var existingProduct = _items[existingProductIndex];
   _items.removeAt(existingProductIndex);

@@ -35,6 +35,7 @@ class UserProductItem extends StatelessWidget{
                 try {
                   await Provider.of<Products>(context, listen: false).deleteProduct(id);
                 } catch (error) {
+                  // ignore: deprecated_member_use
                   scaffold.showSnackBar(                //since in future widget tree is unstable
                     SnackBar(
                       content: Text('Deleting Failed!', textAlign: TextAlign.center,),

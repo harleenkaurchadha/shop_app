@@ -41,12 +41,14 @@ class CartItem extends StatelessWidget{
         title: Text('Are you sure?'),
         content: Text('Do you want to remove the item from the cart?'),
         actions: <Widget>[
+         // ignore: deprecated_member_use
          FlatButton(
            child: Text('No'),
            onPressed: (){
              Navigator.of(ctx).pop(false);      //closes the dialog box and gives value to dismissal
            },
          ),
+          // ignore: deprecated_member_use
           FlatButton(
             child: Text('Yes'),
             onPressed: (){

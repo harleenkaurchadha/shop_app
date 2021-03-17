@@ -57,6 +57,7 @@ class AuthScreen extends StatelessWidget{
                      child: Text(
                        'MyShop',
                        style: TextStyle(
+                         // ignore: deprecated_member_use
                          color: Theme.of(context).accentTextTheme.title.color,
                          fontSize: 50,
                          fontFamily: 'Anton',
@@ -135,6 +136,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
     showDialog(context: context, builder: (ctx) => AlertDialog(title: Text('An Error Occurred!'),
     content: Text(message),
     actions: <Widget>[
+      // ignore: deprecated_member_use
       FlatButton(
         child: Text('Okay'),
         onPressed: (){
@@ -231,6 +233,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                    if(value.isEmpty || !value.contains('@')){
                      return 'Invalid email!';
                    }
+                   return null;
                  },
                  onSaved: (value){
                    _authData['email'] = value;
@@ -244,6 +247,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                    if(value.isEmpty || value.length < 5){
                      return 'Password is too short!';
                    }
+                   return null;
                  },
                  onSaved: (value){
                    _authData['password']= value;
@@ -269,6 +273,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                            if(value!= _passwordController.text){
                              return 'Passwords do not match!';
                            }
+                           return null;
                          }
                              : null,
                        ),
@@ -281,6 +286,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                if(_isLoading)
                  CircularProgressIndicator()
                else
+                 // ignore: deprecated_member_use
                  RaisedButton(
                    child:
                    Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
@@ -291,6 +297,7 @@ class _AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin
                    padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
                    color: Theme.of(context).primaryTextTheme.button.color,
                  ),
+               // ignore: deprecated_member_use
                FlatButton(
                  child: Text(
                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),

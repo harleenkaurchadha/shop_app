@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../screens/product_detail_screen.dart';
 import '../providers/product.dart';
 import '../providers/cart.dart';
-import '../widgets/badge.dart';
 import '../providers/auth.dart';
 
 class ProductItem extends StatelessWidget{
@@ -57,7 +56,9 @@ class ProductItem extends StatelessWidget{
               ),
               onPressed: (){
                 cart.addItem(product.id, product.price, product.title);
+                // ignore: deprecated_member_use
                 Scaffold.of(context).hideCurrentSnackBar();
+                // ignore: deprecated_member_use
                 Scaffold.of(context).showSnackBar(                     //in this we reach out to nearest scaffold in widget tree
                   SnackBar(
                     content: Text('Added item to cart!'),

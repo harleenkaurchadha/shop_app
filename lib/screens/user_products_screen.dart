@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import './edit_product_screen.dart';
 import '../widgets/user_product_item.dart';
 import '../providers/products.dart';
-import '../widgets/user_product_item.dart';
 import '../widgets/app_drawer.dart';
 
 class UserProductsScreen extends StatelessWidget{
@@ -16,7 +15,6 @@ class UserProductsScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
   //  final productsData= Provider.of<Products>(context);           //otherwise we will go into infinite loop
-    print('rebuilding');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Products'),
